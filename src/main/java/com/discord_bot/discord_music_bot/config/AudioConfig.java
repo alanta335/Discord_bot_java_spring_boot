@@ -2,6 +2,7 @@ package com.discord_bot.discord_music_bot.config;
 
 import com.discord_bot.discord_music_bot.feature_core.music.LavaPlayerAudioProvider;
 import com.discord_bot.discord_music_bot.feature_core.music.TrackScheduler;
+import com.sedmelluq.discord.lavaplayer.player.AudioConfiguration;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
@@ -16,7 +17,10 @@ public class AudioConfig {
     @Bean
     public AudioPlayerManager audioPlayerManager() {
         DefaultAudioPlayerManager manager = new DefaultAudioPlayerManager();
-        manager.getConfiguration().setFrameBufferFactory(NonAllocatingAudioFrameBuffer::new);
+//        manager.getConfiguration().setFrameBufferFactory(NonAllocatingAudioFrameBuffer::new);
+        manager.setFrameBufferDuration(1000); // 1000ms buffer
+        manager.getConfiguration().setOpusEncodingQuality(10);
+        manager.getConfiguration().setResamplingQuality(AudioConfiguration.ResamplingQuality.HIGH);
         AudioSourceManagers.registerRemoteSources(manager);
         AudioSourceManagers.registerLocalSource(manager);
         return manager;
