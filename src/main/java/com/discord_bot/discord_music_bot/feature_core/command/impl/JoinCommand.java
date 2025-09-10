@@ -7,11 +7,13 @@ import discord4j.core.object.entity.Message;
 import discord4j.core.spec.AudioChannelJoinSpec;
 import discord4j.voice.AudioProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class JoinCommand implements Command {
@@ -28,13 +30,12 @@ public class JoinCommand implements Command {
         return message.getAuthorAsMember()
                 .flatMap(Member::getVoiceState)
                 .flatMap(VoiceState::getChannel)
-                .flatMap(channel -> {
+                .flatMap(audioChannel -> {
                     AudioChannelJoinSpec spec = AudioChannelJoinSpec.builder()
-                            .provider(provider)     // hook in LavaPlayer provider
-                            .selfDeaf(false)
-                            .selfMute(false)
+                            .provider(provider)
+                            .selfDeaf(true)
                             .build();
-                    return channel.join(spec);
+                    return audioChannel.join(spec).doOnError(t -> log.error("failed to join voice channel", t));
                 })
                 .then();
     }

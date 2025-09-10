@@ -26,14 +26,18 @@ public class PlayCommand implements Command {
     public Mono<Void> execute(Message message, List<String> args) {
         if (args.isEmpty()) {
             return message.getChannel()
-                    .flatMap(ch -> ch.createMessage("Please provide a link or track to play."))
+                    .flatMap(ch -> ch.createMessage("Please provide the file path or URL."))
                     .then();
         }
-        String url = args.getFirst();
-        manager.loadItem(url, scheduler);
+
+        String input = args.getFirst();
+        String source = input.startsWith("http") ? input : input;
+
+        manager.loadItem(source, scheduler);
+
         return message.getChannel()
-                .flatMap(ch -> ch.createMessage("Queued: " + url))
-                .then(); // You can add confirmation later
+                .flatMap(ch -> ch.createMessage("Queued: " + input))
+                .then();
     }
 
     @Override

@@ -18,6 +18,7 @@ public class AudioConfig {
         DefaultAudioPlayerManager manager = new DefaultAudioPlayerManager();
         manager.getConfiguration().setFrameBufferFactory(NonAllocatingAudioFrameBuffer::new);
         AudioSourceManagers.registerRemoteSources(manager);
+        AudioSourceManagers.registerLocalSource(manager);
         return manager;
     }
 
